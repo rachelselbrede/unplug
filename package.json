@@ -1,0 +1,12 @@
+{
+  "name": "unplug",
+  "version": "1.0.0",
+  "description": "Find the energy vampires in your home: what standby power costs you in dollars and CO2 each year.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "start": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
