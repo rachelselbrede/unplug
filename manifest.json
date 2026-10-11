@@ -1,0 +1,14 @@
+{
+  "name": "Unplug: find the energy vampires in your home",
+  "short_name": "Unplug",
+  "description": "See what standby power costs you in dollars and CO2 each year, and what to unplug first.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbf7ef",
+  "theme_color": "#2f8f5b",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

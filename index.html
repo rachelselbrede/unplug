@@ -4,8 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Unplug · find the energy vampires in your home</title>
-  <meta name="description" content="Tap the devices you leave plugged in and see what their standby power costs you in dollars and CO₂ each year, with real measured numbers.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔌</text></svg>">
+  <meta name="description" content="Tap the devices you leave plugged in and see what their standby power costs you in dollars and CO₂ each year, with real measured numbers for your state.">
+  <meta name="theme-color" content="#2f8f5b">
+  <meta property="og:title" content="Unplug · find the energy vampires in your home">
+  <meta property="og:description" content="Nearly everything with a plug keeps sipping power when it's off. See what it costs you, and what to unplug first.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,9 +21,12 @@
     <div class="wrap">
       <p class="eyebrow">🔌 Unplug</p>
       <h1>Find the energy vampires in your home.</h1>
-      <p class="lede">Nearly everything with a plug keeps sipping power when it's "off." Tap what you own, and see what it costs you and the planet each year, using real measured numbers.</p>
+      <p class="lede">Nearly everything with a plug keeps sipping power when it's "off." Tap what you own, pick your state, and see what it costs you and the planet each year, using real measured numbers. Then plan the fix.</p>
       <div class="hero-actions">
-        <button type="button" id="fill" class="btn primary">Try a typical home</button>
+        <span class="try">Try one:</span>
+        <button type="button" class="btn primary" data-preset="dorm"></button>
+        <button type="button" class="btn primary" data-preset="apartment"></button>
+        <button type="button" class="btn primary" data-preset="house"></button>
         <button type="button" id="clear" class="btn ghost">Start over</button>
       </div>
     </div>
@@ -34,7 +42,13 @@
     <aside id="summary" class="summary" aria-labelledby="sum-h">
       <h2 id="sum-h">Your standby bill</h2>
 
-      <p id="empty" class="empty">Add a device to see your numbers. Or hit <b>Try a typical home</b> up top.</p>
+      <div class="region">
+        <label for="region">Where do you live?</label>
+        <select id="region" aria-describedby="region-note"></select>
+        <p id="region-note" class="help"></p>
+      </div>
+
+      <p id="empty" class="empty">Add a device to see your numbers. Or try a preset up top.</p>
 
       <div id="results" hidden>
         <div class="stats">
@@ -46,20 +60,43 @@
         </div>
         <p id="possible" class="possible"></p>
 
+        <div class="chart-wrap" aria-label="Cost breakdown by device">
+          <div id="chart" class="chart"></div>
+          <ul id="legend" class="legend"></ul>
+        </div>
+
         <div class="saved">
           <div class="bar"><div id="saved-bar"></div></div>
-          <p id="saved-text"></p>
-          <button type="button" id="unplug-all" class="btn small">Unplug everything I can</button>
+          <p id="saved-text" aria-live="polite"></p>
+          <div class="saved-actions">
+            <button type="button" id="unplug-all" class="btn small">Unplug everything I can</button>
+            <button type="button" id="share" class="btn small primary">Share my card</button>
+          </div>
+          <p id="share-note" class="help" aria-live="polite"></p>
         </div>
+
+        <section id="strips" class="strips" hidden aria-labelledby="strips-h">
+          <h3 id="strips-h">Your power strip plan</h3>
+          <p class="help">One switched strip turns a whole corner off at once. Here's how to group what you own.</p>
+          <ul id="strip-list" class="strip-list"></ul>
+        </section>
 
         <h3>Unplug first</h3>
         <ol id="list" class="list"></ol>
+
+        <section id="scale" class="scale" hidden aria-labelledby="scale-h">
+          <h3 id="scale-h">If everyone did this</h3>
+          <p id="scale-text"></p>
+        </section>
       </div>
 
       <div class="price">
         <label for="price">Your electricity price (¢ per kWh)</label>
-        <input id="price" type="number" inputmode="decimal" min="1" max="200" step="0.01" aria-describedby="price-help price-error">
-        <p id="price-help" class="help">Default is the US average for July 2026 from the EIA. Your bill has your real number.</p>
+        <div class="price-row">
+          <input id="price" type="number" inputmode="decimal" min="1" max="200" step="0.01" aria-describedby="price-help price-error">
+          <button type="button" id="price-reset" class="btn small" hidden>Use state average</button>
+        </div>
+        <p id="price-help" class="help">Starts at your state's average from the EIA. Your bill has your real number.</p>
         <p id="price-error" class="error" role="alert"></p>
       </div>
     </aside>
@@ -70,13 +107,16 @@
     <ul>
       <li><b>Standby watts</b> are the median of measured units per product from Lawrence Berkeley National Laboratory's <a href="https://standby.lbl.gov/standby-power-data-metering" target="_blank" rel="noopener">Products That Use Standby Power</a> table (Nov 2022). Each device shows its measured range and how many units were tested.</li>
       <li><b>Yearly kWh</b> = watts × 8,760 hours ÷ 1,000. This assumes the device sits idle all year, so it's an upper bound for things you actually use a lot.</li>
-      <li><b>Cost</b> uses the US average residential price of 18.31 ¢/kWh for July 2026 from the <a href="https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a" target="_blank" rel="noopener">EIA Electric Power Monthly</a>, Table 5.6.A. Change it to match your bill.</li>
-      <li><b>CO₂</b> uses the US average grid rate of 767 lb per MWh (0.348 kg per kWh) from <a href="https://www.epa.gov/egrid/summary-data" target="_blank" rel="noopener">EPA eGRID 2023</a>. Your grid may be cleaner or dirtier.</li>
-      <li><b>Miles</b> use the EPA's figure of about 400 g CO₂ per mile for a <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">typical passenger vehicle</a>.</li>
+      <li><b>Price</b> is your state's average residential price for July 2026 from the <a href="https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a" target="_blank" rel="noopener">EIA Electric Power Monthly</a>, Table 5.6.A. Change it to match your bill.</li>
+      <li><b>CO₂</b> uses your state's output emission rate from <a href="https://www.epa.gov/egrid/summary-data" target="_blank" rel="noopener">EPA eGRID 2023</a>, Table 3 (US average: 767 lb per MWh, or 0.348 kg per kWh).</li>
+      <li><b>Miles and cars</b> use the EPA's figures of about 400 g CO₂ per mile and 4.6 metric tons per year for a <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">typical passenger vehicle</a>.</li>
+      <li><b>Households</b>: about 133 million in the US in 2024, from the Census Bureau's <a href="https://www.census.gov/newsroom/press-releases/2024/families-and-living-arrangements.html" target="_blank" rel="noopener">Families and Living Arrangements</a> release (38.5 million one-person households is 29% of all households).</li>
+      <li><b>Power strip payback</b> assumes a $25 switched or smart strip. That's an assumption, not a measurement.</li>
     </ul>
-    <p>Everything stays in your browser. Nothing you enter is sent anywhere. Built for CodeRED: Orion, October 2026.</p>
+    <p>Everything stays in your browser. Nothing you enter is sent anywhere, and the page works offline once loaded. Built for CodeRED: Orion, October 2026.</p>
   </footer>
 
+  <canvas id="card" hidden width="1200" height="630" aria-hidden="true"></canvas>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

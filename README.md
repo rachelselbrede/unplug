@@ -8,11 +8,15 @@ Built in one evening for **CodeRED: Orion** (October 10–11, 2026), aimed at th
 
 ## What it does
 
-- **Pick what's plugged in.** Devices are grouped by room. Tap + for each one you own. Hit **Try a typical home** to see a realistic apartment in one click.
-- **See the real cost.** Total idle watts, kWh per year, dollars per year, kg of CO₂, and the same CO₂ as miles of driving.
-- **Know what to do.** Every device is ranked biggest first and labeled **Unplug it**, **Put on a switched power strip**, or **Leave it plugged in** (smoke alarms, routers, and hardwired appliances stay on, but still count so your total is honest).
+- **Pick what's plugged in.** Devices are grouped by room. Tap + for each one you own, or start from a **Dorm room**, **Apartment**, or **Family house** preset.
+- **Your state, your numbers.** Pick where you live and the price and grid CO₂ switch to your state's EIA price and eGRID emission rate. The price stays editable.
+- **See the real cost.** Total idle watts, kWh per year, dollars per year, kg of CO₂, the same CO₂ as miles of driving, and a breakdown bar of who's eating the bill.
+- **Know what to do.** Every device is ranked, with the ones you can act on first, and labeled **Unplug it**, **Put on a switched power strip**, or **Leave it plugged in** (smoke alarms, routers, and hardwired appliances stay on, but still count so your total is honest).
+- **Power strip plan.** Strip-friendly devices are grouped by room into concrete strips, with how many months a $25 strip takes to pay for itself.
 - **Check it off.** Tick the devices you'll unplug and see exactly what you'd save. **Unplug everything I can** does it all at once.
-- **Your price, your bill.** The electricity price defaults to the US average and is editable.
+- **If everyone did this.** Your savings scaled to 1 in 10 US households, in GWh, metric tons of CO₂, and cars off the road.
+- **Share my card.** Renders a PNG summary card you can post or text to whoever pays the bill.
+- **Works offline.** Installable as a web app, with a service worker so it keeps working without a connection.
 - **Shows its work.** Each device shows the measured range and how many units were tested, with a link to the source.
 
 ## Run it

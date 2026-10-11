@@ -78,18 +78,48 @@ export const FACTORS = {
   // US national average CO2 output emission rate, eGRID 2023: 767.209 lb/MWh = 0.348 kg/kWh.
   // Source: EPA eGRID summary data, https://www.epa.gov/egrid/summary-data
   kgCo2PerKwh: 0.348,
-  // A typical passenger vehicle emits about 400 grams of CO2 per mile.
+  // A typical passenger vehicle emits about 400 grams of CO2 per mile and about 4.6 metric tons per year.
   // Source: EPA, "Greenhouse Gas Emissions from a Typical Passenger Vehicle",
   // https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle
   kgCo2PerMile: 0.4,
+  tonsCo2PerCarYear: 4.6,
+  // About 133 million US households in 2024: the Census Bureau reports 38.5 million one-person
+  // households as 29% of all households. Source: https://www.census.gov/newsroom/press-releases/2024/families-and-living-arrangements.html
+  usHouseholds: 133e6,
+  // The "what if" scale-up assumes 1 in 10 households.
+  scaleShare: 0.1,
+  // Assumed price of a smart or switched power strip, in dollars. An assumption, not a measurement.
+  smartStripCost: 25,
   hoursPerYear: 8760,
 };
 
-// A quick-fill preset for the demo: a typical apartment.
-export const TYPICAL_HOME = {
-  settop: 1, tv: 1, console: 1, streaming: 1, soundbar: 1,
-  microwave: 1, coffee: 1, toaster: 1,
-  desktop: 1, monitor: 1, printer: 1, router: 1, laptop: 1,
-  phonecharger: 2, radio: 1,
-  washer: 1, dryer: 1, smartbulb: 4, smoke: 2,
+// Quick-fill presets for the demo.
+export const PRESETS = {
+  dorm: {
+    name: "Dorm room",
+    emoji: "🎓",
+    counts: { laptop: 1, monitor: 1, phonecharger: 2, wireless: 1, console: 1, tv: 1, streaming: 1, microwave: 1, kettle: 1, fan: 1, smartbulb: 1, battcharger: 1 },
+  },
+  apartment: {
+    name: "Apartment",
+    emoji: "🏢",
+    counts: {
+      settop: 1, tv: 1, console: 1, streaming: 1, soundbar: 1,
+      microwave: 1, coffee: 1, toaster: 1,
+      desktop: 1, monitor: 1, printer: 1, router: 1, laptop: 1,
+      phonecharger: 2, radio: 1,
+      washer: 1, dryer: 1, smartbulb: 4, smoke: 2,
+    },
+  },
+  house: {
+    name: "Family house",
+    emoji: "🏡",
+    counts: {
+      settop: 2, tv: 3, console: 2, streaming: 2, soundbar: 1, dvd: 1, wireless: 2, ac: 1,
+      microwave: 1, coffee: 1, toaster: 1, kettle: 1, rice: 1, dishwasher: 1, range: 1,
+      desktop: 1, monitor: 2, printer: 1, router: 1, laptop: 2, speakers: 1, ups: 1,
+      phonecharger: 4, radio: 2, humidifier: 1, purifier: 1, robovac: 1,
+      washer: 1, dryer: 1, waterheater: 1, furnace: 1, camera: 2, hub: 1, smartbulb: 10, smartplug: 3, doorbell: 1, smoke: 4, battcharger: 2,
+    },
+  },
 };
